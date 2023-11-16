@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 import Card from "react-bootstrap/Card";
 import Accordion from "react-bootstrap/Accordion";
 import { IoPaperPlaneOutline } from "react-icons/io5";
@@ -195,7 +196,6 @@ const WebInfo = ({ data, page, email }) => {
       }
 
       if (response.success == false) {
-        setSending(false);
         setEmailSent(false);
         toast.error(response?.message);
       }
@@ -312,7 +312,7 @@ const WebInfo = ({ data, page, email }) => {
                 {data?.logos?.length > 1 ? (
                   <ol>
                     {data?.logos?.map((logo, index) => (
-                      <li>
+                      <li key={index}>
                         <a href={logo} key={index}>
                           {logo}
                         </a>

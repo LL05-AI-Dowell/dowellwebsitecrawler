@@ -25,7 +25,7 @@ const Home = () => {
         `https://100085.pythonanywhere.com/api/email/`,
         {
           toname: "Dowell UX Living Lab",
-          toemail: formValues.email,
+          toemail: "dowell@dowellresearch.uk",
           subject: `${
             formValues.email
           } result from DoWell Website Crawler on ${new Date()}`,
@@ -252,12 +252,12 @@ const Home = () => {
               ""
             )}
             <div className="d-flex justify-content-center mt-3">
-              <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fcmvf8l.csb.app%2F">
-                <img
+              {/* <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fll05-ai-dowell.github.io%2Fdowellwebsitecrawler%2F">
+                <img 
                   style={{ width: "100px", height: "auto" }}
-                  src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fcmvf8l.csb.app%2F&labelColor=%2326802f&countColor=%23555555&style=plastic&labelStyle=upper"
-                />
-              </a>
+                  src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fll05-ai-dowell.github.io%2Fdowellwebsitecrawler%2F&labelColor=%2326802f&countColor=%23555555&style=plastic&labelStyle=upper"/>
+              </a> */}
+              <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fll05-ai-dowell.github.io%2Fdowellwebsitecrawler%2F"><img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fll05-ai-dowell.github.io%2Fdowellwebsitecrawler%2F&labelColor=%23458204&countColor=%23555555&style=plastic&labelStyle=upper" /></a>
             </div>
           </div>
         </div>

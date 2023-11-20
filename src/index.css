@@ -36,6 +36,10 @@ h1 {
   font-size: 2.5rem;
 }
 
+h2 {
+  color: green;
+}
+
 img {
   width: 170px;
   margin-bottom: 1rem;

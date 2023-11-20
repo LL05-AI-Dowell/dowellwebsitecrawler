@@ -4,18 +4,21 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import CardComponent from "./pageCard";
 import { FaSpider } from "react-icons/fa";
+import { FaExclamationCircle } from 'react-icons/fa';
 
 const Home = () => {
-  const [pagesUrl, setPagesUrl] = useState();
+  const [pagesUrl, setPagesUrl] = useState({});
+  const [empty, setEmpty] = useState(false)
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
 
   const [formValues, setFormValues] = useState({
     web_url: "",
     info_request: {
-      pages_url: ["about", "contact", "careers", "services", "products", "faq"]
+      pages_url: ["about", "contact", "careers", "services", "products"]
     },
     email: ""
+    // email: "dowell@dowellresearch.uk"
   });
 
   const handleSendEmail = async (htmlContent) => {
@@ -26,6 +29,7 @@ const Home = () => {
         {
           toname: "Dowell UX Living Lab",
           toemail: "dowell@dowellresearch.uk",
+          // toemail: formValues.email,
           subject: `${
             formValues.email
           } result from DoWell Website Crawler on ${new Date()}`,
@@ -49,13 +53,23 @@ const Home = () => {
       web_url: `https://${formValues.web_url}`,
       info_request: formValues.info_request
     };
+
     setLoading(true);
+    
     axios
       .post(`https://www.uxlive.me/api/website-info-extractor/`, formDataToSend)
       .then((response) => {
         setLoading(false);
 
         setPagesUrl(response?.data?.meta_data?.pages_url);
+
+        const isObjectEmpty = Object.keys(response?.data?.meta_data?.pages_url).length === 0;
+
+        if (isObjectEmpty) {
+          setEmpty(true)
+        } else {
+          setEmpty(false)
+        }
 
         const htmlContent = `
           <!DOCTYPE html>
@@ -112,6 +126,7 @@ const Home = () => {
     ? Object.entries(pagesUrl).map(([name, url]) => ({ name, url }))
     : [];
 
+
   const handleClearFields = () => {
     setFormValues({
       web_url: ""
@@ -139,7 +154,7 @@ const Home = () => {
 
               <div className="col-md-12" style={{ textAlign: "center" }}>
                 <h1 className="w-full mb-4 justify-content-center align-items-center">
-                  Welcome to Dowell Website Crawler
+                  Welcome to Website Crawler
                 </h1>
 
                 <p className="subTitle">
@@ -248,9 +263,13 @@ const Home = () => {
                   </div>
                 ))}
               </div>
-            ) : (
-              ""
-            )}
+            ) : empty ? (
+              <div className="container d-flex flex-column align-items-center justify-content-center">
+                <FaExclamationCircle size={50} color="red" /> {/* Adjust size and color as needed */}
+                <h2 className="mt-3">Pages Not Found</h2>
+                <p className="text-muted">The requested pages could not be found.</p>
+              </div>
+            ): ("")}
             <div className="d-flex justify-content-center mt-3">
               <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fll05-ai-dowell.github.io%2Fdowellwebsitecrawler%2F">
                 <img

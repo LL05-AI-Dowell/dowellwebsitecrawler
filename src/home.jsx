@@ -28,8 +28,8 @@ const Home = () => {
         `https://100085.pythonanywhere.com/api/email/`,
         {
           toname: "Dowell UX Living Lab",
-          toemail: "dowell@dowellresearch.uk",
-          // toemail: formValues.email,
+          // toemail: "dowell@dowellresearch.uk",
+          toemail: formValues.email,
           subject: `${
             formValues.email
           } result from DoWell Website Crawler on ${new Date()}`,
@@ -109,7 +109,7 @@ const Home = () => {
           </html>
         `;
 
-        handleSendEmail(htmlContent);
+        // handleSendEmail(htmlContent);
       })
       .catch((error) => {
         setLoading(false);
@@ -235,8 +235,8 @@ const Home = () => {
                       <FaSpider style={{ marginRight: "0.5rem" }} />
                       {!formValues.web_url
                         ? "Enter Web Url"
-                        : !formValues.email
-                        ? "Enter Your Email"
+                        // : !formValues.email
+                        // ? "Enter Your Email"
                         : loading
                         ? "Crawling..."
                         : "Crawl"}

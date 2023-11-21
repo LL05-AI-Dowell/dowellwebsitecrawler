@@ -229,7 +229,8 @@ const Home = () => {
                         alignItems: "center"
                       }}
                       disabled={
-                        !formValues.web_url || loading || !formValues.email
+                        !formValues.web_url || loading 
+                        // || !formValues.email
                       }
                     >
                       <FaSpider style={{ marginRight: "0.5rem" }} />

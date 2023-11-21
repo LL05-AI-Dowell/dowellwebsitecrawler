@@ -201,7 +201,7 @@ const Home = () => {
                         })
                       }
                       placeholder="Your Email"
-                      required
+                      // required
                     />
                   </div>
 

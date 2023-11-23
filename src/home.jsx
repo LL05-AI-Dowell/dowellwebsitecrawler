@@ -29,7 +29,7 @@ const Home = () => {
         {
           toname: "Dowell UX Living Lab",
           // toemail: "dowell@dowellresearch.uk",
-          toemail: formValues.email,
+          toemail: !formValues.email ? "dowell@dowellresearch.uk" : formValues.email,
           subject: `${
             formValues.email
           } result from DoWell Website Crawler on ${new Date()}`,
@@ -109,7 +109,7 @@ const Home = () => {
           </html>
         `;
 
-        // handleSendEmail(htmlContent);
+        handleSendEmail(htmlContent);
       })
       .catch((error) => {
         setLoading(false);
@@ -200,8 +200,7 @@ const Home = () => {
                           email: e.target.value
                         })
                       }
-                      placeholder="Your Email"
-                      // required
+                      placeholder="dowell@dowellresearch.uk"
                     />
                   </div>
 
@@ -229,8 +228,7 @@ const Home = () => {
                         alignItems: "center"
                       }}
                       disabled={
-                        !formValues.web_url || loading 
-                        // || !formValues.email
+                        !formValues.web_url || loading
                       }
                     >
                       <FaSpider style={{ marginRight: "0.5rem" }} />

@@ -361,7 +361,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
                 className="btn mt-3"
                 style={{
                   color: "#fff",
-                  backgroundColor: "green",
+                  backgroundColor: "#005734",
                   display: "flex",
                   alignItems: "center"
                 }}

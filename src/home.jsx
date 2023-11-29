@@ -263,7 +263,7 @@ const Home = () => {
                 {urlsData.map((item, index) => (
                   <div className="col-12" key={index}>
                     <div className="card mb-4 rounded">
-                      <CardComponent page={item} email={formValues.email} />
+                      <CardComponent page={item} email={!formValues.email ? "dowell@dowellresearch.uk" : formValues.email} />
                     </div>
                   </div>
                 ))}

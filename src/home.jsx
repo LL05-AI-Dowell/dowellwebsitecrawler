@@ -17,7 +17,7 @@ const Home = () => {
     info_request: {
       pages_url: ["about", "contact", "careers", "services", "products"]
     },
-    email: ""
+    email: "abatetsegaye12@gmail.com"
     // email: "dowell@dowellresearch.uk"
   });
 

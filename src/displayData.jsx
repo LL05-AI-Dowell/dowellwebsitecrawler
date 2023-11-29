@@ -7,7 +7,7 @@ import { LuMailCheck } from "react-icons/lu";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const WebInfo = ({ data, page, email }) => {
+const WebInfo = ({ data, page, email,formValues }) => {
   const EMAIL_FROM_WEBSITE = `
   <!DOCTYPE html>
   <html lang="en">
@@ -51,13 +51,13 @@ const WebInfo = ({ data, page, email }) => {
           <section style="margin: 20px;">
             <p style="font-weight: bold; font-size: 14px;">Detailed information</p>
             <ul style="font-size: 14px;">
-              <li>Company Name: ${
+              ${formValues.name ? `<li>Company Name: ${
                 data?.company_name ? data.company_name : "None Found"
-              }</li>
+              }</li>`:''}
               <li>Website Url: <a href="${data?.website_url}">${
     data?.website_url
   }</a></li>
-              <li>
+  ${formValues.phone_numbers ?`<li>
                 Phone Numbers:<br />
                 ${
                   data?.meta_data?.phone_numbers?.length > 1
@@ -66,8 +66,9 @@ const WebInfo = ({ data, page, email }) => {
                         .join("")}</ol>`
                     : "None Found"
                 }
-              </li>
-              <li>
+              </li>`:''}
+              
+       ${formValues.emails ?`<li>
                 Emails:<br />
                 ${
                   data?.meta_data?.emails?.length > 1
@@ -76,8 +77,8 @@ const WebInfo = ({ data, page, email }) => {
                         .join("")}</ol>`
                     : "None Found"
                 }
-              </li>
-              <li>
+              </li>`:''}
+              ${formValues.addresses ?`<li>
                 Addresses:<br />
                 ${
                   data?.meta_data?.addresses != null
@@ -88,8 +89,9 @@ const WebInfo = ({ data, page, email }) => {
                         .join("")}</ol>`
                     : "None Found"
                 }
-              </li>
-              <li>
+              </li>`:''}
+
+             ${formValues.social_media_all ? `<li>
                 Social Media Links:<br />
                 ${
                   data?.meta_data?.social_media_links &&
@@ -108,8 +110,8 @@ const WebInfo = ({ data, page, email }) => {
                     )
                     .join("")
                 }
-              </li>
-              <li>
+              </li>`:''}
+            ${formValues.links ? `<li>
                 Other Links:<br />
                 ${
                   data?.meta_data?.links > 1
@@ -121,8 +123,8 @@ const WebInfo = ({ data, page, email }) => {
                         .join("")}</ol>`
                     : "None Found"
                 }
-              </li>
-              <li>
+              </li>`:''}
+           ${formValues.logos ? `<li>
                 Logos:<br />
                 ${
                   data?.logos?.length > 1
@@ -134,7 +136,7 @@ const WebInfo = ({ data, page, email }) => {
                         .join("")}</ol>`
                     : "No Logos Found"
                 }
-              </li>
+              </li>`:''}
             </ul>
             <div style="margin: 20px;">
               <p>DoWell UX Living Lab Team</p>
@@ -218,15 +220,23 @@ const WebInfo = ({ data, page, email }) => {
             <Card.Body>
               <Card.Title>{data?.name}</Card.Title>
 
-              <Card.Subtitle>Company Name</Card.Subtitle>
+             {formValues.name && 
+              <>
+             <Card.Subtitle>Company Name</Card.Subtitle>
               <Card.Text>
                 {data?.company_name ? data?.company_name : "None Found"}
               </Card.Text>
-
-              <Card.Subtitle>Website</Card.Subtitle>
-              <Card.Text>
-                <a href={data?.website_url}>{data?.website_url}</a>
-              </Card.Text>
+              </>
+              }
+              {formValues.web_url && <>
+                <Card.Subtitle>Website</Card.Subtitle>
+                 <Card.Text>
+                    <a href={data?.website_url}>{data?.website_url}</a>
+               </Card.Text>
+              
+              </>}
+             
+              {formValues.phone_numbers && <>
 
               <Card.Subtitle>Phone Numbers</Card.Subtitle>
               <Card.Text>
@@ -239,8 +249,13 @@ const WebInfo = ({ data, page, email }) => {
                 ) : (
                   "None Found"
                 )}
-              </Card.Text>
+              </Card.Text>   
 
+              </>}
+           
+
+              {formValues.emails &&
+               <>
               <Card.Subtitle>Emails</Card.Subtitle>
               <Card.Text>
                 {data?.meta_data?.emails?.length > 1 ? (
@@ -252,9 +267,13 @@ const WebInfo = ({ data, page, email }) => {
                 ) : (
                   "None Found"
                 )}
-              </Card.Text>
-
-              <Card.Subtitle>Addresses</Card.Subtitle>
+              </Card.Text>  
+              
+              </>}
+            
+            {formValues.addresses &&
+               <>
+             <Card.Subtitle>Addresses</Card.Subtitle>
               <Card.Text>
                 {data?.meta_data?.addresses != null ? (
                   <ol>
@@ -266,8 +285,12 @@ const WebInfo = ({ data, page, email }) => {
                   "None Found"
                 )}
               </Card.Text>
+               </>}
+              
             </Card.Body>
             <Card.Body>
+            {formValues.social_media_all &&
+               <>
               <Card.Subtitle>Social Media Links</Card.Subtitle>
               <Card.Text>
                 {data?.meta_data?.social_media_links &&
@@ -289,8 +312,11 @@ const WebInfo = ({ data, page, email }) => {
                       )
                   )}
               </Card.Text>
+              </>}
             </Card.Body>
             <Card.Body>
+            {formValues.links &&
+               <>
               <Card.Subtitle>Other Links</Card.Subtitle>
               <Card.Text>
                 {data?.meta_data?.links > 1 ? (
@@ -305,8 +331,12 @@ const WebInfo = ({ data, page, email }) => {
                   "None Found"
                 )}
               </Card.Text>
+              </>
+             }
             </Card.Body>
             <Card.Body>
+            {formValues.logos &&
+               <>
               <Card.Subtitle>Logos</Card.Subtitle>
               <Card.Text>
                 {data?.logos?.length > 1 ? (
@@ -323,6 +353,9 @@ const WebInfo = ({ data, page, email }) => {
                   "No Logos Found"
                 )}
               </Card.Text>
+               </>
+               }
+             
               <button
                 type="button"
                 className="btn mt-3"

@@ -356,7 +356,7 @@ const CardComponent = ({ page, email }) => {
         </Accordion.Item>
       </Accordion>
 
-      {data && <WebInfo data={data} page={page?.name} email={email} />}
+      {data && <WebInfo data={data} page={page?.name} email={email} formValues={formValues}/>}
     </>
   );
 };

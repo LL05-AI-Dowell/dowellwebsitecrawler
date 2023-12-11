@@ -60,7 +60,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
   ${formValues.phone_numbers ?`<li>
                 Phone Numbers:<br />
                 ${
-                  data?.meta_data?.phone_numbers?.length > 1
+                  data?.meta_data?.phone_numbers?.length > 0
                     ? `<ol>${data?.meta_data?.phone_numbers
                         .map((no, index) => `<li key=${index}>${no}</li>`)
                         .join("")}</ol>`
@@ -71,7 +71,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
        ${formValues.emails ?`<li>
                 Emails:<br />
                 ${
-                  data?.meta_data?.emails?.length > 1
+                  data?.meta_data?.emails?.length > 0
                     ? `<ol>${data?.meta_data?.emails
                         .map((email, index) => `<li key=${index}>${email}</li>`)
                         .join("")}</ol>`
@@ -114,7 +114,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
             ${formValues.links ? `<li>
                 Other Links:<br />
                 ${
-                  data?.meta_data?.links > 1
+                  data?.meta_data?.links > 0
                     ? `<ol>${data?.meta_data?.links
                         .map(
                           (link, index) =>
@@ -127,7 +127,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
            ${formValues.logos ? `<li>
                 Logos:<br />
                 ${
-                  data?.logos?.length > 1
+                  data?.logos?.length > 0
                     ? `<ol>${data?.logos
                         .map(
                           (logo, index) =>
@@ -240,7 +240,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
 
               <Card.Subtitle>Phone Numbers</Card.Subtitle>
               <Card.Text>
-                {data?.meta_data?.phone_numbers?.length > 1 ? (
+                {data?.meta_data?.phone_numbers?.length > 0 ? (
                   <ol>
                     {data?.meta_data?.phone_numbers?.map((no, index) => (
                       <li key={index}>{no}</li>
@@ -258,7 +258,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
                <>
               <Card.Subtitle>Emails</Card.Subtitle>
               <Card.Text>
-                {data?.meta_data?.emails?.length > 1 ? (
+                {data?.meta_data?.emails?.length > 0 ? (
                   <ol>
                     {data?.meta_data?.emails?.map((email, index) => (
                       <li key={index}>{email}</li>
@@ -319,7 +319,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
                <>
               <Card.Subtitle>Other Links</Card.Subtitle>
               <Card.Text>
-                {data?.meta_data?.links > 1 ? (
+                {data?.meta_data?.links > 0 ? (
                   <ol>
                     {data?.meta_data?.links?.map((link, index) => (
                       <li key={index}>
@@ -339,7 +339,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
                <>
               <Card.Subtitle>Logos</Card.Subtitle>
               <Card.Text>
-                {data?.logos?.length > 1 ? (
+                {data?.logos?.length > 0 ? (
                   <ol>
                     {data?.logos?.map((logo, index) => (
                       <li key={index}>

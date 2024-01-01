@@ -51,15 +51,15 @@ const Home = () => {
     e.preventDefault();
     let response = null;
     // Prepare the data to send to the backend
-    try {
-      response = await axios.get(
-        `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=get_user_email&product_number=UXLIVINGLAB005&email=${formValues.email}`
-      );
-      console.log("datas", response.data);
-    } catch (error) {
+    // try {
+    response = await axios.get(
+      `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=get_user_email&product_number=UXLIVINGLAB005&email=${formValues.email}`
+    );
+    // console.log("datas", response.data);
+    /* } catch (error) {
       // console.log(error);
-      toast.error(error?.data?.message);
-    }
+      toast.error(error?.response?.data?.message);
+   }*/
     setOccurrence(response.data.occurrences);
 
     if (response.data.occurrences === 0) {
@@ -82,7 +82,10 @@ const Home = () => {
     setLoading(true);
 
     axios
-      .post(`https://www.uxlive.me/api/website-info-extractor/?main=${true}`, formDataToSend)
+      .post(
+        `https://www.uxlive.me/api/website-info-extractor/?main=${true}`,
+        formDataToSend
+      )
       .then((response) => {
         setLoading(false);
 
@@ -158,12 +161,9 @@ const Home = () => {
   const handleClearFields = () => {
     setFormValues({
       web_url: "",
-<<<<<<< HEAD
-=======
       info_request: {
-        pages_url: ["about", "contact", "careers", "services", "products"]
-      }
->>>>>>> 5f7ae241d93a3d7c4505185b1096b058b7591792
+        pages_url: ["about", "contact", "careers", "services", "products"],
+      },
     });
   };
 
@@ -186,7 +186,7 @@ const Home = () => {
                 />
               </div>
 
-              <hr className="col-md-11 pb-2"/>
+              <hr className="col-md-11 pb-2" />
 
               <div className="col-md-12" style={{ textAlign: "center" }}>
                 <h1 className="w-full mb-4 justify-content-center align-items-center">
@@ -268,7 +268,9 @@ const Home = () => {
                       disabled={!formValues.web_url || loading}
                     >
                       {console.log("occurrence", occurrence)}
-                      <FaSpider style={{ marginRight: "0.5rem" }} />
+                      {occurrence < 6 && (
+                        <FaSpider style={{ marginRight: "0.5rem" }} />
+                      )}
                       {!formValues.web_url
                         ? "Enter Web Url"
                         : // : !formValues.email
@@ -289,7 +291,15 @@ const Home = () => {
                         : `Crawl`}
                     </button>
                     {(occurrence === 4 || occurrence === 5) && (
-                      <button className="bg-green-700 flex justify-center hover:bg-green-600 mx-auto text-white px-3 py-1  rounded-md w-auto">
+                      <button
+                        type="button"
+                        className="btn"
+                        style={{
+                          color: "#fff",
+                          backgroundColor: "#005734",
+                          marginLeft: "0.5rem", // Add some right margin for spacing
+                        }}
+                      >
                         Contribute
                       </button>
                     )}
@@ -310,7 +320,14 @@ const Home = () => {
                 {urlsData.map((item, index) => (
                   <div className="col-12" key={index}>
                     <div className="card mb-4 rounded">
-                      <CardComponent page={item} email={!formValues.email ? "dowell@dowellresearch.uk" : formValues.email} />
+                      <CardComponent
+                        page={item}
+                        email={
+                          !formValues.email
+                            ? "dowell@dowellresearch.uk"
+                            : formValues.email
+                        }
+                      />
                     </div>
                   </div>
                 ))}

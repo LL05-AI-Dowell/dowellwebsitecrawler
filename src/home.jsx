@@ -141,7 +141,7 @@ const Home = () => {
         setLoading(false);
         console.log(error?.response?.data?.web_url);
         if (error?.response?.data?.error) {
-          toast.error(error?.response?.data?.error);
+          toast.warning(error?.response?.data?.error);
         }
         if (error?.response?.data?.web_url) {
           toast.error("Enter a valid URL");

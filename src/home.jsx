@@ -82,7 +82,7 @@ const Home = () => {
     setLoading(true);
 
     axios
-      .post(`https://www.uxlive.me/api/website-info-extractor/`, formDataToSend)
+      .post(`https://www.uxlive.me/api/website-info-extractor/?main=${true}`, formDataToSend)
       .then((response) => {
         setLoading(false);
 

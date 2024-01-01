@@ -335,7 +335,7 @@ const CardComponent = ({ page, email }) => {
                       className="btn mt-3"
                       style={{
                         color: "#fff",
-                        backgroundColor: "green",
+                        backgroundColor: "#005734",
                         display: "flex",
                         alignItems: "center"
                       }}
@@ -356,7 +356,7 @@ const CardComponent = ({ page, email }) => {
         </Accordion.Item>
       </Accordion>
 
-      {data && <WebInfo data={data} page={page?.name} email={email} />}
+      {data && <WebInfo data={data} page={page?.name} email={email} formValues={formValues}/>}
     </>
   );
 };

@@ -82,7 +82,7 @@ const Home = () => {
     setLoading(true);
 
     axios
-      .post(`https://www.uxlive.me/api/website-info-extractor/`, formDataToSend)
+      .post(`https://www.uxlive.me/api/website-info-extractor/?main=${true}`, formDataToSend)
       .then((response) => {
         setLoading(false);
 
@@ -140,6 +140,9 @@ const Home = () => {
       .catch((error) => {
         setLoading(false);
         console.log(error?.response?.data?.web_url);
+        if (error?.response?.data?.error) {
+          toast.warning(error?.response?.data?.error);
+        }
         if (error?.response?.data?.web_url) {
           toast.error("Enter a valid URL");
         } else {
@@ -155,6 +158,12 @@ const Home = () => {
   const handleClearFields = () => {
     setFormValues({
       web_url: "",
+<<<<<<< HEAD
+=======
+      info_request: {
+        pages_url: ["about", "contact", "careers", "services", "products"]
+      }
+>>>>>>> 5f7ae241d93a3d7c4505185b1096b058b7591792
     });
   };
 
@@ -176,6 +185,8 @@ const Home = () => {
                   alt="Dowell Logo"
                 />
               </div>
+
+              <hr className="col-md-11 pb-2"/>
 
               <div className="col-md-12" style={{ textAlign: "center" }}>
                 <h1 className="w-full mb-4 justify-content-center align-items-center">
@@ -250,7 +261,7 @@ const Home = () => {
                       className="btn"
                       style={{
                         color: "#fff",
-                        backgroundColor: "green",
+                        backgroundColor: "#005734",
                         display: "flex",
                         alignItems: "center",
                       }}
@@ -299,7 +310,7 @@ const Home = () => {
                 {urlsData.map((item, index) => (
                   <div className="col-12" key={index}>
                     <div className="card mb-4 rounded">
-                      <CardComponent page={item} email={formValues.email} />
+                      <CardComponent page={item} email={!formValues.email ? "dowell@dowellresearch.uk" : formValues.email} />
                     </div>
                   </div>
                 ))}

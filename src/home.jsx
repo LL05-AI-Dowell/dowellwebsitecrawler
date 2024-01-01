@@ -4,20 +4,20 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import CardComponent from "./pageCard";
 import { FaSpider } from "react-icons/fa";
-import { FaExclamationCircle } from 'react-icons/fa';
+import { FaExclamationCircle } from "react-icons/fa";
 
 const Home = () => {
   const [pagesUrl, setPagesUrl] = useState({});
-  const [empty, setEmpty] = useState(false)
+  const [empty, setEmpty] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
-
+  const [occurrence, setOccurrence] = useState(null);
   const [formValues, setFormValues] = useState({
     web_url: "",
     info_request: {
-      pages_url: ["about", "contact", "careers", "services", "products"]
+      pages_url: ["about", "contact", "careers", "services", "products"],
     },
-    email: ""
+    email: "",
     // email: "dowell@dowellresearch.uk"
   });
 
@@ -29,11 +29,13 @@ const Home = () => {
         {
           toname: "Dowell UX Living Lab",
           // toemail: "dowell@dowellresearch.uk",
-          toemail: !formValues.email ? "dowell@dowellresearch.uk" : formValues.email,
+          toemail: !formValues.email
+            ? "dowell@dowellresearch.uk"
+            : formValues.email,
           subject: `${
             formValues.email
           } result from DoWell Website Crawler on ${new Date()}`,
-          email_content: htmlContent
+          email_content: htmlContent,
         }
       );
       // Set the emailSent state to true when the email is sent
@@ -45,17 +47,35 @@ const Home = () => {
     }
   };
 
-  const handleScrapeWebsiteInfo = (e) => {
+  const handleScrapeWebsiteInfo = async (e) => {
     e.preventDefault();
-
+    let response = null;
     // Prepare the data to send to the backend
+    response = await axios.get(
+      `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=get_user_email&product_number=UXLIVINGLAB005&email=${formValues.email}`
+    );
+    console.log("datas", response.data);
+    setOccurrence(response.data.occurrences);
+
+    if (response.data.occurrences === 0) {
+      axios.post(
+        `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=register_user`,
+        {
+          product_number: "UXLIVINGLAB005",
+          email: formValues.email,
+        }
+      );
+    }
+
     const formDataToSend = {
       web_url: `https://${formValues.web_url}`,
-      info_request: formValues.info_request
+      info_request: formValues.info_request,
+      email: formValues.email,
+      occurrences: response.data.occurrences,
     };
-
+    //    console.log("form data", formDataToSend);
     setLoading(true);
-    
+
     axios
       .post(`https://www.uxlive.me/api/website-info-extractor/`, formDataToSend)
       .then((response) => {
@@ -63,12 +83,13 @@ const Home = () => {
 
         setPagesUrl(response?.data?.meta_data?.pages_url);
 
-        const isObjectEmpty = Object.keys(response?.data?.meta_data?.pages_url).length === 0;
+        const isObjectEmpty =
+          Object.keys(response?.data?.meta_data?.pages_url).length === 0;
 
         if (isObjectEmpty) {
-          setEmpty(true)
+          setEmpty(true);
         } else {
-          setEmpty(false)
+          setEmpty(false);
         }
 
         const htmlContent = `
@@ -126,11 +147,9 @@ const Home = () => {
     ? Object.entries(pagesUrl).map(([name, url]) => ({ name, url }))
     : [];
 
-
   const handleClearFields = () => {
     setFormValues({
       web_url: "",
-      email: "",
       info_request: {
         pages_url: ["about", "contact", "careers", "services", "products"]
       }
@@ -147,7 +166,7 @@ const Home = () => {
                 style={{
                   display: "flex",
                   justifyContent: "center",
-                  margin: "1rem 0"
+                  margin: "1rem 0",
                 }}
               >
                 <img
@@ -172,20 +191,22 @@ const Home = () => {
 
                 <form onSubmit={handleScrapeWebsiteInfo}>
                   <div className="input-group mb-3">
-                    <span style={{
-                        fontWeight: "bold"
-                      }}className="input-group-text">
-                        https://
-                      </span>
+                    <span
+                      style={{
+                        fontWeight: "bold",
+                      }}
+                      className="input-group-text"
+                    >
+                      https://
+                    </span>
                     <input
                       type="text"
                       className="form-control"
                       value={formValues.web_url}
-                      
                       onChange={(e) =>
                         setFormValues({
                           ...formValues,
-                          web_url: e.target.value.toLowerCase()
+                          web_url: e.target.value.toLowerCase(),
                         })
                       }
                       placeholder="Enter Website Url"
@@ -197,13 +218,13 @@ const Home = () => {
                       type="email"
                       className="form-control"
                       style={{
-                        marginBottom: "1rem"
+                        marginBottom: "1rem",
                       }}
                       value={formValues.email}
                       onChange={(e) =>
                         setFormValues({
                           ...formValues,
-                          email: e.target.value
+                          email: e.target.value,
                         })
                       }
                       placeholder="dowell@dowellresearch.uk"
@@ -217,7 +238,7 @@ const Home = () => {
                       style={{
                         color: "#fff",
                         backgroundColor: "#d9bf18",
-                        marginRight: "0.5rem" // Add some right margin for spacing
+                        marginRight: "0.5rem", // Add some right margin for spacing
                       }}
                       onClick={handleClearFields}
                     >
@@ -231,21 +252,34 @@ const Home = () => {
                         color: "#fff",
                         backgroundColor: "#005734",
                         display: "flex",
-                        alignItems: "center"
+                        alignItems: "center",
                       }}
-                      disabled={
-                        !formValues.web_url || loading
-                      }
+                      disabled={!formValues.web_url || loading}
                     >
+                      {console.log("occurrence", occurrence)}
                       <FaSpider style={{ marginRight: "0.5rem" }} />
                       {!formValues.web_url
                         ? "Enter Web Url"
-                        // : !formValues.email
+                        : // : !formValues.email
                         // ? "Enter Your Email"
-                        : loading
+                        loading
                         ? "Crawling..."
-                        : "Crawl"}
+                        : occurrence === null
+                        ? `Experience`
+                        : occurrence === 0 ||
+                          occurrence === 1 ||
+                          occurrence === 2 ||
+                          occurrence === 3 ||
+                          occurrence === 4 ||
+                          occurrence === 5
+                        ? `Crawl`
+                        : `Contribute`}
                     </button>
+                    {(occurrence === 4 || occurrence === 5) && (
+                      <button className="bg-green-700 flex justify-center hover:bg-green-600 mx-auto text-white px-3 py-1  rounded-md w-auto">
+                        Contribute
+                      </button>
+                    )}
                   </div>
                 </form>
               </div>
@@ -270,11 +304,16 @@ const Home = () => {
               </div>
             ) : empty ? (
               <div className="container d-flex flex-column align-items-center justify-content-center">
-                <FaExclamationCircle size={50} color="red" /> {/* Adjust size and color as needed */}
+                <FaExclamationCircle size={50} color="red" />{" "}
+                {/* Adjust size and color as needed */}
                 <h2 className="mt-3">Pages Not Found</h2>
-                <p className="text-muted">The requested pages could not be found.</p>
+                <p className="text-muted">
+                  The requested pages could not be found.
+                </p>
               </div>
-            ): ("")}
+            ) : (
+              ""
+            )}
             <div className="d-flex justify-content-center mt-3">
               <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fll05-ai-dowell.github.io%2Fdowellwebsitecrawler%2F">
                 <img

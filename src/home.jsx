@@ -155,6 +155,9 @@ const Home = () => {
   const handleClearFields = () => {
     setFormValues({
       web_url: "",
+      info_request: {
+        pages_url: ["about", "contact", "careers", "services", "products"]
+      }
     });
   };
 
@@ -176,6 +179,8 @@ const Home = () => {
                   alt="Dowell Logo"
                 />
               </div>
+
+              <hr className="col-md-11 pb-2"/>
 
               <div className="col-md-12" style={{ textAlign: "center" }}>
                 <h1 className="w-full mb-4 justify-content-center align-items-center">
@@ -250,7 +255,7 @@ const Home = () => {
                       className="btn"
                       style={{
                         color: "#fff",
-                        backgroundColor: "green",
+                        backgroundColor: "#005734",
                         display: "flex",
                         alignItems: "center",
                       }}
@@ -299,7 +304,7 @@ const Home = () => {
                 {urlsData.map((item, index) => (
                   <div className="col-12" key={index}>
                     <div className="card mb-4 rounded">
-                      <CardComponent page={item} email={formValues.email} />
+                      <CardComponent page={item} email={!formValues.email ? "dowell@dowellresearch.uk" : formValues.email} />
                     </div>
                   </div>
                 ))}

@@ -51,10 +51,15 @@ const Home = () => {
     e.preventDefault();
     let response = null;
     // Prepare the data to send to the backend
-    response = await axios.get(
-      `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=get_user_email&product_number=UXLIVINGLAB005&email=${formValues.email}`
-    );
-    console.log("datas", response.data);
+    try {
+      response = await axios.get(
+        `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=get_user_email&product_number=UXLIVINGLAB005&email=${formValues.email}`
+      );
+      console.log("datas", response.data);
+    } catch (error) {
+      // console.log(error);
+      toast.error(error?.data?.message);
+    }
     setOccurrence(response.data.occurrences);
 
     if (response.data.occurrences === 0) {
@@ -268,7 +273,9 @@ const Home = () => {
                           occurrence === 4 ||
                           occurrence === 5
                         ? `Crawl`
-                        : `Contribute`}
+                        : occurrence >= 6
+                        ? `Contribute`
+                        : `Crawl`}
                     </button>
                     {(occurrence === 4 || occurrence === 5) && (
                       <button className="bg-green-700 flex justify-center hover:bg-green-600 mx-auto text-white px-3 py-1  rounded-md w-auto">

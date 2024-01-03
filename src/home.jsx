@@ -76,7 +76,7 @@ const Home = () => {
   const handleScrapeWebsiteInfo = async (e) => {
     e.preventDefault();
     const response = await handleOccurrence();
-    console.log("new response", response);
+    //console.log("new response", response);
 
     const formDataToSend = {
       web_url: `https://${formValues.web_url}`,
@@ -274,7 +274,8 @@ const Home = () => {
                       className="btn"
                       style={{
                         color: "#fff",
-                        backgroundColor: "#005734",
+                        backgroundColor:
+                          occurrence >= 6 ? `#198754` : `#005734`,
                         display: "flex",
                         alignItems: "center",
                       }}

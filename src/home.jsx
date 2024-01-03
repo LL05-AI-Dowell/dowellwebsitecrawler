@@ -12,6 +12,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [occurrence, setOccurrence] = useState(null);
+  const [showOccurrence, setShowOccurrence] = useState(false);
   const [formValues, setFormValues] = useState({
     web_url: "",
     info_request: {
@@ -70,43 +71,47 @@ const Home = () => {
     toast.error(error?.response?.data?.message);
  }*/
     setOccurrence(response.data.occurrences);
-    return response;
+    setShowOccurrence(true);
+    //return response;
   };
 
   const handleScrapeWebsiteInfo = async (e) => {
     e.preventDefault();
-    const response = await handleOccurrence();
+    if (!showOccurrence) {
+      handleOccurrence();
+    }
+
     //console.log("new response", response);
+    if (showOccurrence) {
+      const formDataToSend = {
+        web_url: `https://${formValues.web_url}`,
+        info_request: formValues.info_request,
+        email: formValues.email,
+        occurrences: occurrence,
+      };
+      //    console.log("form data", formDataToSend);
+      setLoading(true);
 
-    const formDataToSend = {
-      web_url: `https://${formValues.web_url}`,
-      info_request: formValues.info_request,
-      email: formValues.email,
-      occurrences: response.data.occurrences,
-    };
-    //    console.log("form data", formDataToSend);
-    setLoading(true);
+      axios
+        .post(
+          `https://www.uxlive.me/api/website-info-extractor/?main=${true}`,
+          formDataToSend
+        )
+        .then((response) => {
+          setLoading(false);
+          setShowOccurrence(false);
+          setPagesUrl(response?.data?.meta_data?.pages_url);
 
-    axios
-      .post(
-        `https://www.uxlive.me/api/website-info-extractor/?main=${true}`,
-        formDataToSend
-      )
-      .then((response) => {
-        setLoading(false);
+          const isObjectEmpty =
+            Object.keys(response?.data?.meta_data?.pages_url).length === 0;
 
-        setPagesUrl(response?.data?.meta_data?.pages_url);
+          if (isObjectEmpty) {
+            setEmpty(true);
+          } else {
+            setEmpty(false);
+          }
 
-        const isObjectEmpty =
-          Object.keys(response?.data?.meta_data?.pages_url).length === 0;
-
-        if (isObjectEmpty) {
-          setEmpty(true);
-        } else {
-          setEmpty(false);
-        }
-
-        const htmlContent = `
+          const htmlContent = `
           <!DOCTYPE html>
           <html lang="en">
             <head>
@@ -144,20 +149,22 @@ const Home = () => {
           </html>
         `;
 
-        handleSendEmail(htmlContent);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error?.response?.data?.web_url);
-        if (error?.response?.data?.error) {
-          toast.warning(error?.response?.data?.error);
-        }
-        if (error?.response?.data?.web_url) {
-          toast.error("Enter a valid URL");
-        } else {
-          toast.error(error?.message);
-        }
-      });
+          handleSendEmail(htmlContent);
+        })
+        .catch((error) => {
+          setLoading(false);
+          setShowOccurrence(false);
+          console.log(error?.response?.data?.web_url);
+          if (error?.response?.data?.error) {
+            toast.warning(error?.response?.data?.error);
+          }
+          if (error?.response?.data?.web_url) {
+            toast.error("Enter a valid URL");
+          } else {
+            toast.error(error?.message);
+          }
+        });
+    }
   };
 
   const urlsData = pagesUrl
@@ -249,7 +256,8 @@ const Home = () => {
                   </div>
                   <p className="w-full mb-3 justify-content-center align-items-center sm:text-[10px]">
                     <i>
-                      {occurrence < 7 &&
+                      {showOccurrence &&
+                        occurrence < 7 &&
                         occurrence !== null &&
                         `You have ${occurrence} occurrence check again!`}
                     </i>

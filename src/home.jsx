@@ -47,23 +47,15 @@ const Home = () => {
     }
   };
 
-  const handleScrapeWebsiteInfo = async (e) => {
-    e.preventDefault();
+  const handleOccurrence = async () => {
     let response = null;
     // Prepare the data to send to the backend
     // try {
     response = await axios.get(
       `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=get_user_email&product_number=UXLIVINGLAB005&email=${formValues.email}`
     );
-    // console.log("datas", response.data);
-    /* } catch (error) {
-      // console.log(error);
-      toast.error(error?.response?.data?.message);
-   }*/
-    setOccurrence(response.data.occurrences);
-
     if (response.data.occurrences === 0) {
-      axios.post(
+      await axios.post(
         `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=register_user`,
         {
           product_number: "UXLIVINGLAB005",
@@ -71,6 +63,20 @@ const Home = () => {
         }
       );
     }
+
+    // console.log("datas", response.data);
+    /* } catch (error) {
+    // console.log(error);
+    toast.error(error?.response?.data?.message);
+ }*/
+    setOccurrence(response.data.occurrences);
+    return response;
+  };
+
+  const handleScrapeWebsiteInfo = async (e) => {
+    e.preventDefault();
+    const response = await handleOccurrence();
+    console.log("new response", response);
 
     const formDataToSend = {
       web_url: `https://${formValues.web_url}`,
@@ -241,6 +247,13 @@ const Home = () => {
                       placeholder="dowell@dowellresearch.uk"
                     />
                   </div>
+                  <p className="w-full mb-3 justify-content-center align-items-center sm:text-[10px]">
+                    <i>
+                      {occurrence < 7 &&
+                        occurrence !== null &&
+                        `You have ${occurrence} occurrence check again!`}
+                    </i>
+                  </p>
 
                   <div className="mb-3 d-flex justify-content-center">
                     <button
@@ -296,7 +309,7 @@ const Home = () => {
                         className="btn"
                         style={{
                           color: "#fff",
-                          backgroundColor: "#005734",
+                          backgroundColor: "#198754",
                           marginLeft: "0.5rem", // Add some right margin for spacing
                         }}
                       >

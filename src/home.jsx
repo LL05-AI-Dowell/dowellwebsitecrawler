@@ -259,7 +259,11 @@ const Home = () => {
                       {showOccurrence &&
                         occurrence < 7 &&
                         occurrence !== null &&
-                        `You have ${occurrence} occurrence check again!`}
+                        `You have ${occurrence} occurrence crawl again!`}
+                      {showOccurrence &&
+                        occurrence >= 7 &&
+                        occurrence !== null &&
+                        `Maximum experience limit reached!`}
                     </i>
                   </p>
 

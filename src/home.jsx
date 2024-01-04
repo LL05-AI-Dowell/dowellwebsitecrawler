@@ -261,7 +261,7 @@ const Home = () => {
                         occurrence !== null &&
                         `You have ${occurrence} occurrence crawl again!`}
                       {showOccurrence &&
-                        occurrence >= 7 &&
+                        occurrence >= 6 &&
                         occurrence !== null &&
                         `Maximum experience limit reached!`}
                     </i>

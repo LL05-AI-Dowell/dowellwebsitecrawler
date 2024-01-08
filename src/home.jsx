@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import CardComponent from "./pageCard";
 import { FaSpider } from "react-icons/fa";
 import { FaExclamationCircle } from "react-icons/fa";
-
+import Modal from "./Modal";
 const Home = () => {
   const [pagesUrl, setPagesUrl] = useState({});
   const [empty, setEmpty] = useState(false);
@@ -13,6 +13,7 @@ const Home = () => {
   const [emailSent, setEmailSent] = useState(false);
   const [occurrence, setOccurrence] = useState(null);
   const [showOccurrence, setShowOccurrence] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [formValues, setFormValues] = useState({
     web_url: "",
     info_request: {
@@ -72,7 +73,92 @@ const Home = () => {
  }*/
     setOccurrence(response.data.occurrences);
     setShowOccurrence(true);
+    setModalOpen(true);
     //return response;
+  };
+
+  const handleFormData = async () => {
+    const formDataToSend = {
+      web_url: `https://${formValues.web_url}`,
+      info_request: formValues.info_request,
+      email: formValues.email,
+      occurrences: occurrence,
+    };
+    //    console.log("form data", formDataToSend);
+    setLoading(true);
+
+    axios
+      .post(
+        `https://www.uxlive.me/api/website-info-extractor/?main=${true}`,
+        formDataToSend
+      )
+      .then((response) => {
+        setLoading(false);
+        setShowOccurrence(false);
+        setPagesUrl(response?.data?.meta_data?.pages_url);
+
+        const isObjectEmpty =
+          Object.keys(response?.data?.meta_data?.pages_url).length === 0;
+
+        if (isObjectEmpty) {
+          setEmpty(true);
+        } else {
+          setEmpty(false);
+        }
+
+        const htmlContent = `
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Dowell Website Crawler</title>
+          </head>
+          <body>
+            <div style="font-family: Helvetica, Arial, sans-serif; min-width: 100px; overflow: auto; line-height: 2">
+              <div style="margin: 50px auto; width: 70%; padding: 20px 0">
+                <div style="border-bottom: 1px solid #eee">
+                  <a href="#" style="font-size: 1.2em; color: #00466a; text-decoration: none; font-weight: 600">Dowell UX Living Lab</a>
+                </div>
+                <p style="font-size: 1.1em">Email : ${formValues.email}</p>
+                <p style="font-size: 1.1em">Website Link : ${
+                  formValues.web_url
+                }</p>
+                <p style="font-size: 1.1em">Pages</p> ${" "}
+                <ul>
+                  ${Object.entries(response?.data?.meta_data?.pages_url)
+                    .map(
+                      ([page, link]) =>
+                        `<li key=${page}>${page} : ${
+                          link
+                            ? `<a href=${link}>${link}</a>`
+                            : "No link available"
+                        }</li>`
+                    )
+                    .join("")}
+                </ul>
+              </div>
+            </div>
+          </body>
+        </html>
+      `;
+
+        handleSendEmail(htmlContent);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setShowOccurrence(false);
+        console.log(error?.response?.data?.web_url);
+        if (error?.response?.data?.error) {
+          toast.warning(error?.response?.data?.error);
+        }
+        if (error?.response?.data?.web_url) {
+          toast.error("Enter a valid URL");
+        } else {
+          toast.error(error?.message);
+        }
+      });
   };
 
   const handleScrapeWebsiteInfo = async (e) => {
@@ -83,87 +169,7 @@ const Home = () => {
 
     //console.log("new response", response);
     if (showOccurrence) {
-      const formDataToSend = {
-        web_url: `https://${formValues.web_url}`,
-        info_request: formValues.info_request,
-        email: formValues.email,
-        occurrences: occurrence,
-      };
-      //    console.log("form data", formDataToSend);
-      setLoading(true);
-
-      axios
-        .post(
-          `https://www.uxlive.me/api/website-info-extractor/?main=${true}`,
-          formDataToSend
-        )
-        .then((response) => {
-          setLoading(false);
-          setShowOccurrence(false);
-          setPagesUrl(response?.data?.meta_data?.pages_url);
-
-          const isObjectEmpty =
-            Object.keys(response?.data?.meta_data?.pages_url).length === 0;
-
-          if (isObjectEmpty) {
-            setEmpty(true);
-          } else {
-            setEmpty(false);
-          }
-
-          const htmlContent = `
-          <!DOCTYPE html>
-          <html lang="en">
-            <head>
-              <meta charset="UTF-8">
-              <meta http-equiv="X-UA-Compatible" content="IE=edge">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>Dowell Website Crawler</title>
-            </head>
-            <body>
-              <div style="font-family: Helvetica, Arial, sans-serif; min-width: 100px; overflow: auto; line-height: 2">
-                <div style="margin: 50px auto; width: 70%; padding: 20px 0">
-                  <div style="border-bottom: 1px solid #eee">
-                    <a href="#" style="font-size: 1.2em; color: #00466a; text-decoration: none; font-weight: 600">Dowell UX Living Lab</a>
-                  </div>
-                  <p style="font-size: 1.1em">Email : ${formValues.email}</p>
-                  <p style="font-size: 1.1em">Website Link : ${
-                    formValues.web_url
-                  }</p>
-                  <p style="font-size: 1.1em">Pages</p> ${" "}
-                  <ul>
-                    ${Object.entries(response?.data?.meta_data?.pages_url)
-                      .map(
-                        ([page, link]) =>
-                          `<li key=${page}>${page} : ${
-                            link
-                              ? `<a href=${link}>${link}</a>`
-                              : "No link available"
-                          }</li>`
-                      )
-                      .join("")}
-                  </ul>
-                </div>
-              </div>
-            </body>
-          </html>
-        `;
-
-          handleSendEmail(htmlContent);
-        })
-        .catch((error) => {
-          setLoading(false);
-          setShowOccurrence(false);
-          console.log(error?.response?.data?.web_url);
-          if (error?.response?.data?.error) {
-            toast.warning(error?.response?.data?.error);
-          }
-          if (error?.response?.data?.web_url) {
-            toast.error("Enter a valid URL");
-          } else {
-            toast.error(error?.message);
-          }
-        });
+      handleFormData();
     }
   };
 
@@ -185,6 +191,14 @@ const Home = () => {
       <div style={{ width: "100%", height: "100%" }}>
         <div>
           <div className="container ">
+            {showOccurrence && modalOpen && (
+              <Modal
+                setOpenModal={setModalOpen}
+                showOccurrence={showOccurrence}
+                occurrence={occurrence}
+                handleFormData={handleFormData}
+              />
+            )}
             <div className="row justify-content-center mt-2">
               <div
                 style={{
@@ -254,18 +268,6 @@ const Home = () => {
                       placeholder="dowell@dowellresearch.uk"
                     />
                   </div>
-                  <p className="w-full mb-3 justify-content-center align-items-center sm:text-[10px]">
-                    <i>
-                      {showOccurrence &&
-                        occurrence < 7 &&
-                        occurrence !== null &&
-                        `You have ${occurrence} occurrence crawl again!`}
-                      {showOccurrence &&
-                        occurrence >= 6 &&
-                        occurrence !== null &&
-                        `Maximum experience limit reached!`}
-                    </i>
-                  </p>
 
                   <div className="mb-3 d-flex justify-content-center">
                     <button
@@ -294,41 +296,15 @@ const Home = () => {
                       disabled={!formValues.web_url || loading}
                     >
                       {console.log("occurrence", occurrence)}
-                      {occurrence < 6 && (
-                        <FaSpider style={{ marginRight: "0.5rem" }} />
-                      )}
+                      {<FaSpider style={{ marginRight: "0.5rem" }} />}
                       {!formValues.web_url
                         ? "Enter Web Url"
                         : // : !formValues.email
                         // ? "Enter Your Email"
                         loading
                         ? "Crawling..."
-                        : occurrence === null
-                        ? `Experience`
-                        : occurrence === 0 ||
-                          occurrence === 1 ||
-                          occurrence === 2 ||
-                          occurrence === 3 ||
-                          occurrence === 4 ||
-                          occurrence === 5
-                        ? `Crawl`
-                        : occurrence >= 6
-                        ? `Contribute`
                         : `Crawl`}
                     </button>
-                    {(occurrence === 4 || occurrence === 5) && (
-                      <button
-                        type="button"
-                        className="btn"
-                        style={{
-                          color: "#fff",
-                          backgroundColor: "#198754",
-                          marginLeft: "0.5rem", // Add some right margin for spacing
-                        }}
-                      >
-                        Contribute
-                      </button>
-                    )}
                   </div>
                 </form>
               </div>

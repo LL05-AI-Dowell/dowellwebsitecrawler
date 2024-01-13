@@ -6,6 +6,7 @@ import CardComponent from "./pageCard";
 import { FaSpider } from "react-icons/fa";
 import { FaExclamationCircle } from "react-icons/fa";
 import OccurenceModal from "./Modal";
+import Spinner from "./components/spinner";
 
 
 const Home = () => {
@@ -15,6 +16,9 @@ const Home = () => {
   const [emailSent, setEmailSent] = useState(false);
   const [occurrence, setOccurrence] = useState(null);
   const [showOccurrence, setShowOccurrence] = useState(false);
+
+  const [loadingGetOccurence, setLoadingOccurence] = useState(false);
+  
   const [modalOpen, setModalOpen] = useState(false);
   const [formValues, setFormValues] = useState({
     web_url: "",
@@ -53,24 +57,30 @@ const Home = () => {
 
   const handleOccurrence = async () => {
     let response = null;
+    setLoadingOccurence(true)
     // Prepare the data to send to the backend
-    // try {
-    response = await axios.get(
-      `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=get_user_email&product_number=UXLIVINGLAB005&email=${formValues.email}`
-    );
-    if (response.data.occurrences === 0) {
-      await axios.post(
-        `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=register_user`,
-        {
-          product_number: "UXLIVINGLAB005",
-          email: formValues.email,
-        }
+    try {
+      response = await axios.get(
+        `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=get_user_email&product_number=UXLIVINGLAB005&email=${formValues.email}`
       );
+      if (response.data.occurrences === 0) {
+        await axios.post(
+          `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=register_user`,
+          {
+            product_number: "UXLIVINGLAB005",
+            email: formValues.email,
+          }
+        );
+      }
+      setLoadingOccurence(false)
+      setOccurrence(response.data.occurrences);
+      setShowOccurrence(true);
+      setModalOpen(true);
+      console.log("ShowModal", modalOpen)
+    } catch(e) {
+        setLoadingOccurence(false)
+        console.log("Error", e)
     }
-    setOccurrence(response.data.occurrences);
-    setShowOccurrence(true);
-    setModalOpen(true);
-    console.log("ShowModal", modalOpen)
   };
   
 
@@ -301,8 +311,11 @@ const Home = () => {
                         ? "Enter Web Url"
                         : // : !formValues.email
                         // ? "Enter Your Email"
+                        loadingGetOccurence
+                        ? <Spinner />
+                        :
                         loading
-                        ? "Crawling..."
+                        ? "Crawling..." 
                         : `Crawl`}
                     </button>
                   </div>

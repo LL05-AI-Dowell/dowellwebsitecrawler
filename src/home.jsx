@@ -5,7 +5,9 @@ import { toast } from "react-toastify";
 import CardComponent from "./pageCard";
 import { FaSpider } from "react-icons/fa";
 import { FaExclamationCircle } from "react-icons/fa";
-import Modal from "./Modal";
+import OccurenceModal from "./Modal";
+
+
 const Home = () => {
   const [pagesUrl, setPagesUrl] = useState({});
   const [empty, setEmpty] = useState(false);
@@ -65,17 +67,13 @@ const Home = () => {
         }
       );
     }
-
-    // console.log("datas", response.data);
-    /* } catch (error) {
-    // console.log(error);
-    toast.error(error?.response?.data?.message);
- }*/
     setOccurrence(response.data.occurrences);
     setShowOccurrence(true);
     setModalOpen(true);
-    //return response;
+    console.log("ShowModal", modalOpen)
   };
+  
+
 
   const handleFormData = async () => {
     const formDataToSend = {
@@ -163,14 +161,15 @@ const Home = () => {
 
   const handleScrapeWebsiteInfo = async (e) => {
     e.preventDefault();
-    if (!showOccurrence) {
-      handleOccurrence();
-    }
+    // if (!showOccurrence) {
+    handleOccurrence();
+    
+    // }
 
     //console.log("new response", response);
-    if (showOccurrence) {
-      handleFormData();
-    }
+    // if (showOccurrence) {
+    //   handleFormData();
+    // }
   };
 
   const urlsData = pagesUrl
@@ -190,9 +189,10 @@ const Home = () => {
     <div className="page-container">
       <div style={{ width: "100%", height: "100%" }}>
         <div>
-          <div className="container ">
+          <div className="container">
             {showOccurrence && modalOpen && (
-              <Modal
+              <OccurenceModal
+                showModal={modalOpen}
                 setOpenModal={setModalOpen}
                 showOccurrence={showOccurrence}
                 occurrence={occurrence}

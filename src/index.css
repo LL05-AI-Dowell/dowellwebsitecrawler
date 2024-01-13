@@ -64,6 +64,20 @@ img {
   }
 }
 
+.modal-divs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.modalBackground {
+  display: flex;
+  background-color: #005734;
+  background: red;
+}
+
 .modalContainer {
   width: 500px;
   height: 500px;

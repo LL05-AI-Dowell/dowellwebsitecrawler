@@ -1,99 +1,118 @@
-// eslint-disable-next-line
-function Modal({ setOpenModal, handleFormData, showOccurrence, occurrence }) {
+/* eslint-disable react/prop-types */
+
+
+import { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+
+function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence, occurrence}) {
+  
+  const [hasCoupon, setHasCoupon] = useState(false)
+
+  const handleCoupon = () => {
+    setHasCoupon(!hasCoupon)
+  }
+
+  // const handleCoupon = () => {
+  //   setHasCoupon(prevHasCoupon => !prevHasCoupon);
+  // };
+
   return (
-    <div className="modalBackground">
-      <div className="modalContainer">
-        <div className="titleCloseBtn">
-          <button
-            onClick={() => {
-              setOpenModal(false);
-            }}
-          >
-            X
-          </button>
-        </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            margin: "0.1rem 0",
-            width: "50%",
-            marginLeft: "auto",
-            marginRight: "auto",
-            height: "120px" /* Set a fixed height */,
-            objectFit: "cover",
-          }}
-        >
+    <>
+      <Modal centered show={showModal} onHide={() => setOpenModal(false)}>
+        <Modal.Header closeButton>
+          
+        </Modal.Header>
+        <Modal.Body>
+
+        <div className="modal-divs">
           <img
+            style={{width: "100px"}}
             src="https://www.uxlivinglab.org/wp-content/uploads/2023/10/image_1-3.png"
             alt="Dowell Logo"
           />
+
+          <div style={{fontWeight: "bold", fontSize: "20px"}}>Dowell Crawler</div>
         </div>
 
-        <hr className="col-md-11" />
-        <div className="title">
-          <h2>Experiencing: {occurrence} occurrence</h2>
-        </div>
-        <div className="body flex">
-          <p className="w-full mb-3 justify-content-center align-items-center sm:text-[10px]">
-            <i>
-              {showOccurrence &&
-                occurrence < 4 &&
-                occurrence !== null &&
-                `You reach ${occurrence} occurrence crawl again!`}
-              {showOccurrence &&
-                occurrence >= 4 &&
-                occurrence !== null &&
-                `Do you have a coupon? {Yes}`}
+        <div className="modal-divs">
+          {
+            // experience is greater or equal to 6
+            showOccurrence &&
+            occurrence >= 6 &&
+            occurrence !== null ? (
+            <>
+              <p>Your experience count is {occurrence}!</p>
+              <div>
+                <Button variant='danger' onClick={() => setOpenModal(false)}>Cancel</Button> <Button variant='success'>Contribute</Button>
+              </div>
+            </>
+          ) :
+          
+          // experience is less than 4
+          showOccurrence &&
+          occurrence < 4 &&
+          occurrence !== null ?
+          <>
+            <p>Your experience count is {occurrence}!</p>
+            <div>
+              <Button 
+                variant='success' 
+                onClick={() => {
+                  setOpenModal(false);
+                  handleFormData();
+                }}>
+                  Continue
+              </Button>
+            </div>
+          </>
 
-              {showOccurrence &&
-                occurrence >= 6 &&
-                occurrence !== null &&
-                `Maximum experience limit reached!`}
-            </i>
-          </p>
+          // experience is greater or equal to 4 and is less than 6
+          : 
+          showOccurrence &&
+            occurrence >= 4 &&
+            occurrence < 6 &&
+            occurrence !== null && (
+              <div>
+                <p>Your experience count is {occurrence}!</p>
+                <div>
+                  <Button variant='success' 
+                    onClick={() => {
+                      setOpenModal(false);
+                      handleFormData();
+                    }}>
+                      Continue
+                      </Button> <Button variant='secondary'>Contribute</Button>
+                </div>
+              </div>
+          )
+        }
+        
         </div>
-        <div className="footer mb-3 d-flex justify-content-center">
-          <button
-            type="submit"
-            style={{
-              color: "#fff",
-              backgroundColor: occurrence >= 6 ? `#198754` : `#005734`,
-            }}
-            onClick={() => {
-              setOpenModal(false);
-              handleFormData();
-            }}
-          >
-            {occurrence === 0 ||
-            occurrence === 1 ||
-            occurrence === 2 ||
-            occurrence === 3 ||
-            occurrence === 4 ||
-            occurrence === 5
-              ? `Continue`
-              : occurrence >= 6
-              ? `Contribute`
-              : `Continue`}
-          </button>
 
-          {(occurrence === 4 || occurrence === 5) && (
-            <button
-              type="button"
-              className="btn"
-              style={{
-                color: "#fff",
-                backgroundColor: "#198754",
-                marginLeft: "0.5rem", // Add some right margin for spacing
-              }}
-            >
-              Contribute
-            </button>
-          )}
-        </div>
-      </div>
-    </div>
+        { occurrence >= 4 &&
+          <div className = "modal-divs" style={{marginTop: "25px"}}>
+            <p>Do you have a coupon? <Button variant={hasCoupon ? "danger" : "primary"} onClick={handleCoupon}>{hasCoupon ? "No" : "Yes"}</Button></p>
+          </div>
+        }
+
+        { 
+          hasCoupon && 
+          <div style={{ display: "flex", gap: "5px"}}>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter Coupon"
+            /> <Button>Redeem</Button>
+          </div>
+        }
+        
+
+        
+        </Modal.Body>
+      </Modal>
+    </>
   );
 }
 
-export default Modal;
+export default OccurenceModal;

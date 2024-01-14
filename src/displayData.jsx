@@ -319,7 +319,7 @@ const WebInfo = ({ data, page, email,formValues }) => {
                <>
               <Card.Subtitle>Other Links</Card.Subtitle>
               <Card.Text>
-                {data?.meta_data?.link?.length > 0 ? (
+                {data?.meta_data?.links?.length > 0 ? (
                   <ol>
                     {data?.meta_data?.links?.map((link, index) => (
                       <li key={index}>

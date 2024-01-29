@@ -1,21 +1,52 @@
 /* eslint-disable react/prop-types */
-
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import axios from 'axios';
+import Spinner from './components/spinner';
 
-function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence, occurrence}) {
-  
+
+function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence, occurrence, email}) {
   const [hasCoupon, setHasCoupon] = useState(false)
+  const [ coupon, setCoupon ] = useState('')
+  const [ loading, setLoading ] = useState(false)
+  const [ message, setMessage ] = useState({
+    error: false,
+    text: ''
+  })
 
   const handleCoupon = () => {
     setHasCoupon(!hasCoupon)
   }
 
-  // const handleCoupon = () => {
-  //   setHasCoupon(prevHasCoupon => !prevHasCoupon);
-  // };
+  const handleRedeemCoupon = async () => {
+    setLoading(true)
+    try {
+      // setLoading(true);
+      const response = await axios.post(
+        `https://100105.pythonanywhere.com/api/v3/experience_database_services/?type=redeem_coupon`,
+        {
+          email: email,
+          coupon:coupon,
+          product_number:"UXLIVINGLAB005"
+      }
+      );
+      // Set the emailSent state to true when the email is sent
+      setLoading(false);
+      console.log(response);
+    } catch (error) {
+      setLoading(false);
+      setMessage({
+        error: true,
+        text: error?.message
+      })
+      console.log(message);
+    }
+  };
+
+  useEffect(() => {
+    setMessage(message)
+  }, [message])
 
   return (
     <>
@@ -98,12 +129,23 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
 
         { 
           hasCoupon && 
-          <div style={{ display: "flex", gap: "5px"}}>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter Coupon"
-            /> <Button>Redeem</Button>
+          <div>
+            <div style={{ display: "flex", gap: "5px"}}>
+              <input
+                type="text"
+                className="form-control"
+                value={coupon}
+                onChange={(e) => setCoupon(e.target.value)}
+                placeholder="Enter Coupon"
+              /> <Button 
+                  disabled={!coupon || loading}
+                  onClick={handleRedeemCoupon}>
+                    {loading ? <Spinner /> : "Redeem"}
+                  </Button>
+            </div>
+            <div>
+             {message?.error && <p style={{ color: "red"}}>{message?.text}</p>}
+            </div>
           </div>
         }
         

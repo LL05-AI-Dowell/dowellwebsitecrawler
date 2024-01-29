@@ -202,6 +202,7 @@ const Home = () => {
           <div className="container">
             {showOccurrence && modalOpen && (
               <OccurenceModal
+                email={formValues?.email}
                 showModal={modalOpen}
                 setOpenModal={setModalOpen}
                 showOccurrence={showOccurrence}

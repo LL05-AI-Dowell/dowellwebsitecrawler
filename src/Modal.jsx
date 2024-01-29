@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Alert from 'react-bootstrap/Alert';
+
 import axios from 'axios';
 import Spinner from './components/spinner';
 
@@ -144,7 +146,7 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
                   </Button>
             </div>
             <div>
-             {message?.error && <p style={{ color: "red"}}>{message?.text}</p>}
+             {message?.error && <Alert variant="danger">{message?.text}</Alert>}
             </div>
           </div>
         }

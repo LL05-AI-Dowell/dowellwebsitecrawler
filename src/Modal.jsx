@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Alert from 'react-bootstrap/Alert';
+import AlertDismissible from './components/alert';
 
 import axios from 'axios';
 import Spinner from './components/spinner';
@@ -36,6 +36,13 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
       // Set the emailSent state to true when the email is sent
       setLoading(false);
       console.log(response);
+
+      if (response.data.message == "Coupon is not available") {
+        setMessage({
+          error: true,
+          text: response?.data?.message
+        })
+      }
     } catch (error) {
       setLoading(false);
       setMessage({
@@ -76,8 +83,17 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
             occurrence !== null ? (
             <>
               <p>Your experience count is {occurrence}!</p>
-              <div>
-                <Button variant='danger' onClick={() => setOpenModal(false)}>Cancel</Button> <Button variant='success'>Contribute</Button>
+              <div className="btn-flex">
+                <Button variant='danger' onClick={() => setOpenModal(false)}>Cancel</Button>
+                <Button variant='success'>
+                  <a 
+                    className="btn-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href='https://dowellpay.online/contribute-payment/?product_number=UXLIVINGLAB005'>
+                    Contribute
+                  </a>
+                </Button>
               </div>
             </>
           ) :
@@ -108,14 +124,25 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
             occurrence !== null && (
               <div>
                 <p>Your experience count is {occurrence}!</p>
-                <div>
-                  <Button variant='success' 
+                <div className='btn-flex'>
+                  <Button 
+                    variant='success' 
                     onClick={() => {
                       setOpenModal(false);
                       handleFormData();
                     }}>
                       Continue
-                      </Button> <Button variant='secondary'>Contribute</Button>
+                  </Button> 
+                  
+                  <Button variant='secondary'>
+                    <a 
+                      className="btn-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href='https://dowellpay.online/contribute-payment/?product_number=UXLIVINGLAB005'>
+                      Contribute
+                    </a>
+                  </Button>
                 </div>
               </div>
           )
@@ -145,14 +172,11 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
                     {loading ? <Spinner /> : "Redeem"}
                   </Button>
             </div>
-            <div>
-             {message?.error && <Alert variant="danger">{message?.text}</Alert>}
+            <div style={{marginTop: "5px"}}>
+              {message?.error && <AlertDismissible variant="danger" message={message?.text} />}
             </div>
           </div>
         }
-        
-
-        
         </Modal.Body>
       </Modal>
     </>

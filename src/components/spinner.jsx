@@ -5,6 +5,6 @@ const Spinner = () => {
             <span className="sr-only"></span>
         </div>
     )
-  }
+}
   
-  export default Spinner
+export default Spinner

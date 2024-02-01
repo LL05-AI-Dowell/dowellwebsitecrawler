@@ -168,3 +168,18 @@ img {
     width: 100%; /* Adjust width for mobile devices */
   }
 }
+
+.btn-link {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.btn-link:hover {
+  color: #ffffff;
+}
+
+.btn-flex {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}

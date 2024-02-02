@@ -7,12 +7,9 @@ function AlertDismissible({message, variant}) {
 
   return (
     <>
-    { show && 
+    { show &&
         <Alert variant={variant} onClose={() => setShow(false)} dismissible>
-            <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-            <p>
-                {message}
-            </p>
+          {message}
         </Alert>
     }
     </>

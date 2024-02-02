@@ -13,6 +13,7 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
   const [ coupon, setCoupon ] = useState('')
   const [ loading, setLoading ] = useState(false)
   const [ message, setMessage ] = useState({
+    warning: false,
     error: false,
     text: ''
   })
@@ -42,14 +43,23 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
           error: true,
           text: response?.data?.message
         })
-      }
+      } 
+
+      if (response.data.success == true) {
+        setMessage({
+          error: false,
+          text: response?.data?.message
+        })
+      } 
+
     } catch (error) {
       setLoading(false);
       setMessage({
-        error: true,
-        text: error?.message
+        warning: true,
+        text: error?.response?.data?.message
       })
-      console.log(message);
+
+      console.log(error);
     }
   };
 
@@ -173,7 +183,12 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
                   </Button>
             </div>
             <div style={{marginTop: "5px"}}>
-              {message?.error && <AlertDismissible variant="danger" message={message?.text} />}
+              {
+                message && 
+                <AlertDismissible 
+                  variant={message?.error ? "danger" : message?.warning ? "warning" : "success"}
+                  message={message?.text} 
+                />}
             </div>
           </div>
         }

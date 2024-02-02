@@ -48,7 +48,7 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
       if (response.data.success == true) {
         setMessage({
           error: false,
-          text: response?.data?.message
+          text: `Success. ${response?.data?.message}.`
         })
       } 
 
@@ -184,9 +184,9 @@ function OccurenceModal({showModal, setOpenModal, handleFormData, showOccurrence
             </div>
             <div style={{marginTop: "5px"}}>
               {
-                message && 
+                message.text && 
                 <AlertDismissible 
-                  variant={message?.error ? "danger" : message?.warning ? "warning" : "success"}
+                  variant={message?.error ? "danger" : message?.warning ? "warning" : !message?.error && "success"}
                   message={message?.text} 
                 />}
             </div>

@@ -37,9 +37,7 @@ const Home = () => {
         {
           toname: "Dowell UX Living Lab",
           // toemail: "dowell@dowellresearch.uk",
-          toemail: !formValues.email
-            ? "dowell@dowellresearch.uk"
-            : formValues.email,
+          toemail: formValues.email,
           subject: `${
             formValues.email
           } result from DoWell Website Crawler on ${new Date()}`,
